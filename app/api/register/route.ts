@@ -1,6 +1,7 @@
 import prisma from "@/libs/prismadb";
 import bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
+import Stripe from "stripe";
 
 export async function POST(request: Request) {
   try {
@@ -9,6 +10,11 @@ export async function POST(request: Request) {
 
     if (!email || !name || !password) {
       return new NextResponse("Missing info", { status: 400 });
+    }
+
+    const userExist = await prisma.user.findFirst({ where: { email: email } });
+    if (userExist?.email === email) {
+      return new NextResponse("Email already exists", { status: 400 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -23,7 +29,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json(user);
   } catch (error: any) {
-    console.log(error.message, "register error");
     return new NextResponse("internal error", { status: 500 });
   }
 }

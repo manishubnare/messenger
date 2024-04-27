@@ -10,6 +10,7 @@ type Props = {
   secondary?: boolean;
   danger?: boolean;
   disabled?: boolean;
+  className?: string;
 };
 
 function Button({
@@ -20,6 +21,7 @@ function Button({
   secondary,
   danger,
   disabled,
+  className,
 }: Props) {
   return (
     <button
@@ -27,7 +29,7 @@ function Button({
       type={type}
       disabled={disabled}
       className={clsx(
-        `flex justify-center rounded-md px-3 py-2 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2`,
+        `flex justify-center rounded-md px-3 py-2 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${className}`,
         disabled && "opacity-50 cursor-default",
         fullWidth && "w-full",
         secondary

@@ -10,6 +10,9 @@ const getUser = async () => {
 
   try {
     const user = await prisma.user.findMany({
+      include: {
+        userDetail: true,
+      },
       orderBy: {
         createdAt: "desc",
       },

@@ -19,6 +19,8 @@ model User {
   hashedPassword String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+  token          Int?
+  activeSubscription Boolean?
 
   conversationIds String[]       @db.ObjectId
   conversations   Conversation[] @relation(fields: [conversationIds], references: [id])
@@ -28,6 +30,10 @@ model User {
 
   accounts Account[]
   messages Message[]
+  userDetail UserDetail[]
+
+  connectedUserIds   String[]   @db.ObjectId
+  connectedUsers ConnectedUsers[] @relation(fields: [connectedUserIds], references: [id])
 }
 
 model Account {
@@ -77,4 +83,27 @@ model Message {
 
   senderId String @db.ObjectId
   sender   User   @relation(fields: [senderId], references: [id], onDelete: Cascade)
+}
+
+model UserDetail {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  detail1   String
+  detail2   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId])
+}
+
+model ConnectedUsers {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  
+  connectedUserIds   String[]   @db.ObjectId
+  connectedUsers   User[]   @relation(fields: [connectedUserIds], references: [id])
+
+  @@unique([userId])
 }

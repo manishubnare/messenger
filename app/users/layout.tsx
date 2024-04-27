@@ -1,3 +1,4 @@
+import getConnectedUsers from "@/actions/getConnectedUsers";
 import getUser from "@/actions/getUsers";
 import ClientOnly from "@/components/ClientOnly";
 import UserList from "@/components/UserList";
@@ -8,14 +9,15 @@ export default async function UsersLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const users = await getUser();
+  const connectedUser = await getConnectedUsers();
+  const connectedUserDetails = connectedUser?.connectedUsers;
 
   return (
     //@ts-expect-error Server Component
     <Sidebar>
       <div className="h-full">
         <ClientOnly>
-          <UserList items={users} />
+          <UserList items={connectedUserDetails} />
         </ClientOnly>
         {children}
       </div>

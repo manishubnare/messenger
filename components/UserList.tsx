@@ -2,12 +2,17 @@
 
 import { User } from "@prisma/client";
 import UserBox from "./UserBox";
+import { useCallback } from "react";
 
 type Props = {
-  items: User[];
+  items: User[] | undefined;
 };
 
 function UserList({ items }: Props) {
+  const getUserBoxJSX = useCallback(() => {
+    return items?.map((item) => <UserBox key={item.id} data={item} />);
+  }, [items]);
+
   return (
     <aside className="fixed inset-y-0 pb-20 lg:pb-0 lg:left-20 lg:w-80 lg:block overflow-y-auto border-r border-gray-200 dark:border-gray-700 block w-full left-0 dark:bg-black">
       <div className="px-5">
@@ -16,9 +21,7 @@ function UserList({ items }: Props) {
             People
           </div>
         </div>
-        {items.map((item) => (
-          <UserBox key={item.id} data={item} />
-        ))}
+        {getUserBoxJSX()}
       </div>
     </aside>
   );

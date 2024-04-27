@@ -56,7 +56,9 @@ function AuthForm({}: Props) {
       axios
         .post("/api/register", data)
         .then(() => signIn("credentials", data))
-        .catch(() => toast.error("Somethings Went Wrong"))
+        .catch((err) => {
+          toast.error(err.response.data);
+        })
         .finally(() => setIsLoading(false));
     }
 
