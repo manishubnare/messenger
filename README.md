@@ -139,6 +139,16 @@ To run this project, you will need to add the following environment variables to
 
 `NEXT_PUBLIC_LOOKUP_KEY`
 
+`MISTRAL_API_KEY`
+
+`STRIPE_API_KEY`
+
+`STRIPE_WEBHOOK_SECRET`
+
+`NEXT_PUBLIC_STRIPE_PAYMENT_LINK`
+
+`NEXT_PUBLIC_STRIPE_SUBCSCRIPTION_LINK`
+
 ### :gear: Installation
 
 Install my-project with npm
