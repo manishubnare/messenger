@@ -76,19 +76,20 @@ function SearchDetails({
       .post("/api/home/search-user", { input })
       .then(async (res) => {
         setIsLoading(false);
-        setUserDataResult(res.data);
+        setUserDataResult(res.data.data);
         router.refresh();
 
         await Promise.all(
-          res.data.map(async (userData: any) => {
+          res.data.user.map(async (userData: any) => {
             try {
               const userId = get(userData, "id", "");
+              const message = get(userData, "message", "");
               const conversationData = await axios.post("/api/conversations", {
                 userId: userId,
               });
 
               await axios.post("/api/messages", {
-                message: "Hello User, How are you?",
+                message: message,
                 conversationId: conversationData.data.id,
               });
             } catch (error) {

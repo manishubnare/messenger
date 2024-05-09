@@ -19,15 +19,28 @@ export async function POST(request: Request) {
     const prompt = `
       Context information is below.
       ---------------------
-      user data: ${input}
+      My Data: ${currentUser}
+      All User Data: ${input}
       embeddings: ${JSON.stringify(embeddings)}
       ---------------------
-      Given the context information and not prior knowledge, answer the query.
-      Query: Given these users in the context please output 2 users in json format or 1 user if total number of user <= 1. 
-      Must contain the user data only and no other text.
-      Answer:
+      Query: Given these all users data and my data in the context, 
+      please output 2 users in json format from all user data which has a close match to my user data. 
+      You can compare the data with any characteristics provided in the user data or 1 user if the total number of users <= 1. 
+      The result must only contain the 'data' and 'user' keys and no other text or explanatory sentences. 
+      Please strictly follow the format given below.
+      --- format given below ---
+      {
+         data: // Matched full user data in JSON format
+         user: [{
+           id: // matched user id
+           email: // matched user email,
+           message: // similarity message
+         }]
+      }
+      Please make sure that the response does not contain any explanatory sentences or additional text, 
+      and only includes the 'data' and 'user' keys as specified in the format. 
+      The 'message' key should contain a similarity message, such as 'You are both in the same profession' or 'You both live around the address', based on the characteristics of the matched users.
     `
-
     const getUserData = await mistralClient.chat({
       model: "mistral-large-latest",
       messages: [{ role: "user", content: prompt }],
@@ -45,7 +58,7 @@ export async function POST(request: Request) {
     }
 
     const queryContent = JSON.parse(getUserData.choices[0].message.content);
-
+    
     const existingConnectedUser = await prisma.connectedUsers.findUnique({
       where: {
         userId: currentUser?.id,
@@ -56,7 +69,7 @@ export async function POST(request: Request) {
     const updatedConnectedUserIds = uniq([
       ...(existingConnectedUserIds || []),
       ...map(
-        queryContent.filter(
+        queryContent.data.filter(
           (id: string) => !existingConnectedUserIds?.includes(id)
         ),
         "id"
